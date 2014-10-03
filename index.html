@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Challenge: Libraries</title>
+    <style type="text/css">
+      @import url('styles.css');
+    </style>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+      var app = {};
+
+      var NEXT = 106; // j
+      var PREV = 107; // k
+
+      var PROXY = 'https://cors-anywhere.herokuapp.com/https://newschallenge.org/challenge/libraries/';
+      var listUrl = PROXY + 'feedback/contribution.json?order=&direction=&mission=';
+      var summaryURL = PROXY + 'feedback/get_contributions_by_ids.json?id%5B%5D=';
+
+      var url = 'https://cors-anywhere.herokuapp.com/https://newschallenge.org/challenge/libraries/feedback/attorney-library-link';
+
+
+      var gotProject = function(data) {
+        var $summary = $(data);
+        var url = $summary.find('h4 a').attr('href');
+        var votes = $summary.find('span[data-applaud-count-for]').text();
+        console.log("Project info", url, votes);
+        $('#content').html($summary);
+
+        var pl = ' votes)';
+        if (votes === '1') {
+          pl = ' vote)';
+        }
+        $('#content h4').append('(' + votes + pl);
+      };
+
+      var pickProject = function() {
+        var idx = _.random(app.list.length);
+        idx = parseInt(window.location.hash.slice(1), 10) || 0; // || idx; // get the saved idx
+        var prj = app.list[idx];
+        window.location.hash = '#' + idx;
+        $('.next').attr('href', '#' + (idx + 1));
+        $('.prev').attr('href', '#' + (idx - 1));
+
+
+        $.ajax(summaryURL + prj, {
+          success: gotProject
+        });
+      };
+
+      var gotList = function(data) {
+        app.list = data;
+        pickProject();
+      };
+
+      var getList = function() {
+        $.ajax(listUrl, {
+          success: gotList
+        });
+      };
+
+      function getPage(id) {
+        $.ajax(url, {
+          success: function(data) {
+            console.log("raw data", data);
+            var $page = $(data);
+            var $content = $page.find('#main-content');
+            console.log($page, $content);
+            $('#content').html($content);
+          },
+          error: function(jqxhr, status, error) {
+            console.log("error", jqxhr, status, error);
+          },
+          done: function(done) {
+            console.log(done);
+          }
+        });
+
+      }
+
+      var keyPressed = function(event) {
+        var action = event.charCode;
+        var idx = parseInt(window.location.hash.slice(1), 10);
+        if (action === PREV) {
+          idx--;
+        }
+        if (action === NEXT) {
+          idx ++;
+        }
+        window.location.hash = '#' + idx;
+        pickProject();
+      };
+
+      $(window).bind('hashchange', pickProject);
+      $('body').keypress(keyPressed);
+      getList();
+
+
+    });
+    </script>
+</head>
+<body>
+  <div id="controls">
+    <a href="" class="prev">Previous</a>
+    <a href="" class="next">Next</a>
+  </div>
+  <div id="content"></div>
+<!--
+
+https://newschallenge.org/challenge/libraries/feedback/get_contributions_by_ids.json?id%5B%5D=1796
+-->
+
+</body>
+</html>

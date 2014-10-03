@@ -1,0 +1,47 @@
+body {
+  font-family: 'source sans pro', sans-serif;
+  font-size: 0.9em;
+  line-height: 1.7;
+  background: #f5ebe6;
+  color: #45403e;
+}
+
+#content {
+  max-width: 760px;
+  margin: 0px auto;
+}
+
+a {
+  color: #0c89ff;
+  text-decoration: none;
+}
+
+.image-replacement {
+  display: none;
+}
+
+h4 {
+  font-size: 2.3em;
+  line-height: 1;
+}
+
+.list,
+.controls {
+  overflow: auto;
+  margin-bottom: 1em;
+}
+
+.a .image,
+.top-part {
+  float: left;
+  max-width: 520px;
+}
+
+.content-submitted-by,
+.next {
+  float: right;
+  display: inline-block;
+  max-width: 220px;
+}
+
+
