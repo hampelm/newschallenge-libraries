@@ -14,6 +14,7 @@
       var NEXT = 106; // j
       var PREV = 107; // k
 
+      var REALSITE = 'https://newschallenge.org';
       var PROXY = 'https://cors-anywhere.herokuapp.com/https://newschallenge.org/challenge/libraries/';
       var listUrl = PROXY + 'feedback/contribution.json?order=&direction=&mission=';
       var summaryURL = PROXY + 'feedback/get_contributions_by_ids.json?id%5B%5D=';
@@ -33,6 +34,9 @@
           pl = ' vote)';
         }
         $('#content h4').append('(' + votes + pl);
+
+        var href = $('h4 a').attr('href');
+        $('h4 a').attr('href', REALSITE + href);
       };
 
       var pickProject = function() {
