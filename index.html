@@ -7,6 +7,7 @@
     </style>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js"></script>
     <script type="text/javascript">
     $(function () {
       var app = {};
@@ -47,7 +48,6 @@
         $('.next').attr('href', '#' + (idx + 1));
         $('.prev').attr('href', '#' + (idx - 1));
 
-
         $.ajax(summaryURL + prj, {
           success: gotProject
         });
@@ -80,26 +80,48 @@
             console.log(done);
           }
         });
+      };
 
-      }
-
-      var keyPressed = function(event) {
-        var action = event.charCode;
+      var iterateArticle = function(direction) {
         var idx = parseInt(window.location.hash.slice(1), 10);
-        if (action === PREV) {
+
+        if (direction == 'next') {
+          idx++;
+        }
+        if ((direction == 'prev') && (idx > 0)) {
           idx--;
         }
-        if (action === NEXT) {
-          idx ++;
-        }
+
         window.location.hash = '#' + idx;
         pickProject();
       };
 
+      var keyPressed = function(event) {
+        var action = event.charCode;
+
+        if (action === PREV) {
+          iterateArticle('prev');
+        }
+        if (action === NEXT) {
+          iterateArticle('next');
+        }
+      };
+
       $(window).bind('hashchange', pickProject);
       $('body').keypress(keyPressed);
-      getList();
 
+      $("body").swipe({
+        //Generic swipe handler for all directions
+        swipeLeft: function(event, direction, distance, duration, fingerCount) {
+          iterateArticle('next');
+        },
+        swipeRight: function(event, direction, distance, duration, fingerCount) {
+          iterateArticle('prev');
+        },
+        fallbackToMouseEvents: false
+      });
+
+      getList();
 
     });
     </script>
